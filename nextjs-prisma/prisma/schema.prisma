@@ -8,68 +8,118 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password     String?
-  accounts      Account[]
-  sessions      Session[]
-  documents      Document[]     @relation("Owner")
-  collaborations Collaborator[]
-}
+  id                    String    @id @default(cuid())
+  name                  String?
+  email                 String?   @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?   
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-model Document {
-  id           String   @id @default(cuid())
-  title        String
-  content      String?  @db.Text
-  ownerId      String
-  owner        User     @relation("Owner", fields: [ownerId], references: [id])
-  collaborators Collaborator[]
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
 
-model Collaborator {
-  id          String   @id @default(cuid())
-  role        Role     @default(EDITOR)
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  documentId  String
-  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
+  accounts              Account[]
+  documents             Document[] @relation("OwnedDocuments")
+  collaborations        Collaborator[]
+  syncQueue             SyncQueue[]
+  deviceSync            DeviceSync[]
 
-  @@unique([userId, documentId])
-}
-
-enum Role {
-  EDITOR
-  VIEWER
+  @@index([email])
 }
 
 model Account {
   id                 String  @id @default(cuid())
   userId             String
-  type               String
-  provider           String
+  type               String  
+  provider           String  
   providerAccountId  String
-  refresh_token      String? @db.Text
-  access_token       String? @db.Text
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String? @db.Text
+  id_token           String?  @db.Text
   session_state      String?
-  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Document {
+  id              String      @id @default(cuid())
+  title           String      @default("Untitled Document")
+  content         String      @default("")
+  
+
+  yjsState        Bytes?
+  
+  version         Int         @default(0)
+  lastModifiedAt  DateTime    @updatedAt
+  createdAt       DateTime    @default(now())
+  
+  isLocalOnly     Boolean     @default(false) 
+  syncToken       String?   
+  
+  ownerId         String
+  owner           User        @relation("OwnedDocuments", fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  
+  collaborators   Collaborator[]
+
+  @@index([ownerId])
+  @@index([lastModifiedAt])
+}
+
+model Collaborator {
+  id        String    @id @default(cuid())
+  docId     String
+  userId    String
+  role      Role      @default(EDITOR)
+  addedAt   DateTime  @default(now())
+  
+  document  Document  @relation(fields: [docId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([docId, userId])
+  @@index([userId])
+}
+
+enum Role {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+model SyncQueue {
+  id        String   @id @default(cuid())
+  userId    String
+  docId     String
+  operation String   
+  payload   Json    
+  status    String   @default("PENDING")
+  retries   Int      @default(0)
+  error     String?  
+  createdAt DateTime @default(now())
+  syncedAt  DateTime? 
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([docId])
+}
+
+model DeviceSync {
+  id              String   @id @default(cuid())
+  userId          String
+  deviceId        String   @unique 
+  lastSyncTime    DateTime @default(now())
+  lastSeenOnline  DateTime @default(now())
+  isOnline        Boolean  @default(true)
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

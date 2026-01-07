@@ -1,6 +1,6 @@
 "use server";
 
-import {prisma}  from "@/app/lib/prisma";
+import {prisma}  from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export const register = async (formData: FormData) => {
