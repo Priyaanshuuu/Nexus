@@ -1,4 +1,4 @@
-import type {NextAuthConfig} from "next-auth"
+//import type {NextAuthConfig} from "next-auth"
 import "next-auth/jwt"
 
 export interface AuthUSer {
