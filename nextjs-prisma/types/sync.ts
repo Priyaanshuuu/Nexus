@@ -1,19 +1,25 @@
-export interface SyncOperation {
-    id? : string
-    userId : string
-    docId : string
-    operation : "CREATE" | "UPDATE" | "DELETE"
-    payload : SyncPayLoad
-    status : "PENDING" | "SYNCED" | "FAILED"
-    retries?: number
-    error? : string
-    createdAt?: Date
-    syncedAt?: Date
+export interface SyncOperationInput {
+  userId: string
+  docId: string
+  operation: "CREATE" | "UPDATE" | "DELETE"
+  payload: SyncPayLoad
+}
+
+export interface SyncOperation extends SyncOperationInput {
+  id?: string
+  status: "PENDING" | "SYNCED" | "FAILED"
+  retries?: number
+  error?: string
+  createdAt?: Date
+  syncedAt?: Date
 }
 
 export interface SyncPayLoad {
-    property1: string
-    property2 : number
+    content?: string
+    yjsUpdate?: string
+    yjsState?: string
+    title?: string
+  [key: string]: string | undefined
 }
 export interface SyncQueueResponse {
   id: string
