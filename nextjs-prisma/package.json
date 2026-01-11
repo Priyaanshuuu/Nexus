@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
+    "@liveblocks/client": "^3.12.1",
+    "@liveblocks/node": "^3.12.1",
+    "@liveblocks/react": "^3.12.1",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "bcryptjs": "^3.0.3",
