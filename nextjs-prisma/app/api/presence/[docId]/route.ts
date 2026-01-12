@@ -10,7 +10,7 @@ export async function POST(
     {params} : {params : {docId : string}}
 ){
     try {
-        const userId = getCurrentUser()
+        const userId = await getCurrentUser()
         const docId = params.docId
 
         const permission = await getDocumentPermission(docId)
@@ -24,15 +24,15 @@ export async function POST(
         const body = await request.json() as PresenceUpdate
         await updatePresence(docId , userId , body)
 
-        const devicesync = await prisma.deviceSync.findUnique({
+        const devicesync = await prisma.deviceSync.findFirst({
             where : {
-                userId : userId,
+                userId : userId ,
             },
         })
         if(devicesync){
             await prisma.deviceSync.update({
                 where :{
-                    userId : userId
+                    id : devicesync.id
                 },
                 data :{
                     lastSeenOnline : new Date(),
@@ -61,6 +61,7 @@ export async function GET(
 ){
     try{
         const userId = getCurrentUser()
+        console.log(userId)
         const docId = params.docId
 
         const permission = await getDocumentPermission(docId)
@@ -75,10 +76,15 @@ export async function GET(
             select : {
                 ownerId : true,
                 collaborators: {
-                    select :{
-                        userId : true,
-                        name : true,
-                        email : true,
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                image: true,
+                            }
+                        }
                     }
                 }
             }
@@ -106,6 +112,7 @@ export async function GET(
         name: owner!.name,
         email: owner!.email,
        // image: owner!.image,
+
         color: "#FF6B6B", // Red for owner
         lastSeen: new Date(),
       },
@@ -124,6 +131,8 @@ export async function GET(
         lastSeen: new Date(),
       })),
     ]
+    console.log(activeUsers);
+    
 
     }
     catch{
