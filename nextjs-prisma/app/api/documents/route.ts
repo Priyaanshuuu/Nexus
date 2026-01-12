@@ -1,20 +1,23 @@
-// app/api/documents/route.ts
-
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getCurrentUser } from "@/lib/auth/permission"
 import type { DocumentCreateInput } from "@/types/document"
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const userId = await getCurrentUser()
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - No valid session" },
+        { status: 401 }
+      )
+    }
 
     const documents = await prisma.document.findMany({
       where: {
         OR: [
-      
           { ownerId: userId },
-     
           {
             collaborators: {
               some: { userId },
@@ -28,7 +31,7 @@ export async function GET() {
         content: true,
         ownerId: true,
         version: true,
-       isLocalOnly: true,
+        isLocalOnly: true,
         lastModifiedAt: true,
         createdAt: true,
         collaborators: {
@@ -56,6 +59,14 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const userId = await getCurrentUser()
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - No valid session" },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json() as DocumentCreateInput
 
     const title = body.title?.trim() || "Untitled Document"
@@ -66,12 +77,13 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
     const document = await prisma.document.create({
       data: {
         title,
         ownerId: userId,
         content: "",
-        isLocalOnly: true, 
+        isLocalOnly: true,
         version: 0,
       },
       select: {

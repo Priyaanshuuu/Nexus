@@ -7,10 +7,10 @@ import type { DocumentUpdateInput } from "@/types/document"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const docId = params.id
+    const {id:docId} = await params
 
     const permission = await getDocumentPermission(docId)
     if (permission === "none") {
@@ -55,11 +55,11 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string } >}
 ) {
   try {
     const userId = await getCurrentUser()
-    const docId = params.id
+    const {id:docId} = await params
 
     await requireDocumentPermission(docId, "editor")
 
@@ -115,11 +115,11 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string } >}
 ) {
   try {
     const userId = await getCurrentUser()
-    const docId = params.id
+    const {id:docId} = await params
 
     await requireDocumentPermission(docId, "owner")
 

@@ -51,6 +51,10 @@ export async function POST(request : NextRequest){
         }
 
         console.log("User signedIn!!");
+        console.log("User authenticated" , user.id);
+        console.log("User authenticated" , user.email);
+
+        
 
         return NextResponse.json({
             success : true,

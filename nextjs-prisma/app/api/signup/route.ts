@@ -24,7 +24,7 @@ export async function POST(request : NextRequest){
         const existing = await prisma.user.findUnique({
             where : {email},
         })
-        if(!existing){
+        if(existing){
             return NextResponse.json(
                 {error : "User already registered!"},
                 {status : 409}
