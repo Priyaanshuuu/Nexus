@@ -12,14 +12,13 @@ import type { UpdateCollaboratorInput } from "@/types/collaborator"
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string; userId: string } }
+  { params }: { params: Promise<{ id: string; userId: string }> }
 ) {
   try {
     const userId = await getCurrentUser()
     console.log(userId);
     
-    const docId = params.id
-    const targetUserId = params.userId
+    const { id: docId, userId: targetUserId } = await params
 
     // Check permission - only owner can update roles
     const permission = await getDocumentPermission(docId)
@@ -109,14 +108,13 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; userId: string } }
+  { params }: { params: Promise<{ id: string; userId: string }> }
 ) {
   try {
     const userId = await getCurrentUser()
     console.log(userId);
     
-    const docId = params.id
-    const targetUserId = params.userId
+    const { id: docId, userId: targetUserId } = await params
 
     // Check permission - only owner can remove collaborators
     const permission = await getDocumentPermission(docId)

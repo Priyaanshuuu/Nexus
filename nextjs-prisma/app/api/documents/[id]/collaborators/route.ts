@@ -11,15 +11,31 @@ import type { AddCollaboratorInput } from "@/types/collaborator"
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const docId = params.id
+    // Check authentication first
+    let userId: string
+    try {
+      userId = await getCurrentUser()
+      console.log(`[GET] Authenticated user: ${userId}`)
+    } catch (authError) {
+      console.log(`[GET] Authentication failed:`, authError instanceof Error ? authError.message : authError)
+      return NextResponse.json(
+        { error: "Unauthorized - please sign in first" },
+        { status: 401 }
+      )
+    }
+
+    const { id: docId } = await params
+    console.log(`[GET] Checking permission for docId: ${docId}`)
 
     // Check permission - anyone with access can see collaborators
     const permission = await getDocumentPermission(docId)
+    console.log(`[GET] User permission for ${docId}: ${permission}`)
+    
     if (permission === "none") {
-      return NextResponse.json({ error: "Access denied" }, { status: 403 })
+      return NextResponse.json({ error: "Access denied - you don't have permission to view this document" }, { status: 403 })
     }
 
     // Get document with collaborators
@@ -91,12 +107,12 @@ export async function GET(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getCurrentUser()
     console.log(userId)
-    const docId = params.id
+    const { id: docId } = await params
 
     // Check permission - only owner can add collaborators
     const permission = await getDocumentPermission(docId)

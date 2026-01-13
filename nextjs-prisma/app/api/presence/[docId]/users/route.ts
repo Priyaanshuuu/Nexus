@@ -4,11 +4,11 @@ import { getCurrentUser , getDocumentPermission } from "@/lib/auth/permission";
 
 export async function GET(
     request : NextRequest,
-    {params} : { params : { docId : string}}
+    {params} : { params : Promise<{ docId : string}>}
 ){
     try {
         const userId = await getCurrentUser()
-        const docId = params.docId
+        const {docId} = await params
 
         const permission = await getDocumentPermission(docId)
         if(permission === 'none'){

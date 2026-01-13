@@ -3,15 +3,15 @@ import {prisma} from "@/lib/prisma"
 import { getCurrentUser , getDocumentPermission } from "@/lib/auth/permission";
 import { updatePresence } from "@/lib/liveblocks";
 import type { PresenceUpdate } from "@/types/presence";
-import { error } from "node:console";
+//import { error } from "node:console";
 
 export async function POST(
     request : NextRequest,
-    {params} : {params : {docId : string}}
+    {params} : {params : Promise<{docId : string}>}
 ){
     try {
         const userId = await getCurrentUser()
-        const docId = params.docId
+        const {docId} = await params
 
         const permission = await getDocumentPermission(docId)
         if(permission === "none"){
@@ -57,12 +57,12 @@ export async function POST(
 
 export async function GET(
     request : NextRequest,
-    {params} : {params : {docId: string}}
+    {params} : {params : Promise<{docId: string}>}
 ){
     try{
-        const userId = getCurrentUser()
+        const userId = await getCurrentUser()
         console.log(userId)
-        const docId = params.docId
+        const {docId} = await params
 
         const permission = await getDocumentPermission(docId)
         if( permission === "none"){
@@ -133,14 +133,13 @@ export async function GET(
     ]
     console.log(activeUsers);
     
+    return NextResponse.json({ activeUsers })
 
     }
-    catch{
+    catch(error){
         const message = error instanceof Error ? error.message : "Failed to get presence"
         console.log("API Error: Presence" , message);
-
-        
-
+        return NextResponse.json({error : message} , {status : 500})
     }
 
 }
