@@ -1,13 +1,13 @@
 import * as Y from "yjs"
 import pako from "pako"
-import {prisma} from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 
-export class StateSnapshot{
+export class StateSnapshot {
     static async createSnapshot(
-        docId : string,
-        ydoc : Y.Doc,
-        version : number
-    ) : Promise<void>{
+        docId: string,
+        ydoc: Y.Doc,
+        version: number
+    ): Promise<void> {
         try {
             const state = Y.encodeStateAsUpdate(ydoc)
             const compressed = pako.deflate(state)
@@ -17,36 +17,34 @@ export class StateSnapshot{
             const content = ytext.toString()
 
             await prisma.document.update({
-                where : {id : docId},
-                data : {
-                    yjsState : buffer,
-                    version , 
+                where: { id: docId },
+                data: {
+                    yjsState: buffer,
+                    version,
                     content,
                 }
             })
 
-            console.log(`Snapshot created for doc ${docId} v${version}`);
+            console.log(`Snapshot created for doc ${docId} v${version}`)
         } catch (error) {
-            console.log("Error creating snapshot:" , error);
+            console.log("Error creating snapshot:", error)
             throw error
         }
     }
 
-    static async cleanupOldSnapshots(docId : string , keepVersion: number = 10) : Promise<void>{
+    static async cleanupOldSnapshots(docId: string, keepVersions: number = 10): Promise<void> {
         try {
             const doc = await prisma.document.findUnique({
-                where : {id : docId},
-                select : {version : true},
+                where: { id: docId },
+                select: { version: true },
             })
 
-            if(!doc || doc.version <= keepVersion){
-                return 
+            if (!doc || doc.version <= keepVersions) {
+                return
             }
-            console.log(`CleanUp : keeping last ${keepVersion} versions`)
-            
+            console.log(`Cleanup: keeping last ${keepVersions} versions`)
         } catch (error) {
-            console.log("Error cleaning up" , error)
-            
+            console.log("Error cleaning up:", error)
         }
     }
 }
@@ -73,7 +71,22 @@ export async function loadSnapshot(docId : string): Promise<Y.Doc> {
     }
 }
 
-export function getSnapshotSize(state : Uint8Array) : number {
+export function getSnapshotSize(state: Uint8Array): number {
     return state.length
 }
 
+export async function cleanupOldSnapshots(docId: string, keepVersions: number = 10): Promise<void> {
+    try {
+        const doc = await prisma.document.findUnique({
+            where: { id: docId },
+            select: { version: true },
+        })
+
+        if (!doc || doc.version <= keepVersions) {
+            return
+        }
+        console.log(`[Snapshot] Cleanup: keeping last ${keepVersions} versions`)
+    } catch (error) {
+        console.log("Error Cleaning up:", error)
+    }
+}
