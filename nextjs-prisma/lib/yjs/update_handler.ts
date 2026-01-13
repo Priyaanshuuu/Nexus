@@ -53,13 +53,15 @@ export class UpdateHandler {
 
     static async mergeConcurrentUpdated(
         docId : string,
-        updates : Uint8Array
+        updates : Uint16Array
 
     ) : Promise<string> {
         try {
             const ydoc = await YjsDocumentManager.getDocumentState(docId)
             for(const update of updates){
-                YjsDocumentManager.applyUpdate(ydoc , update)
+                YjsDocumentManager.applyUpdate(ydoc , updates)
+                console.log(update);
+                
             }
 
             return YjsDocumentManager.getTextContent(ydoc)
@@ -67,14 +69,33 @@ export class UpdateHandler {
         } catch (error) {
             console.log("Error merging updates" , error);
             throw error
-            
-            
         }
     }
     static async getSyncUpdates(
-     
-
+        docId : string,
+        clientStateVector : Uint8Array
     ) : Promise<Uint8Array> {
-      
+        try {
+            const ydoc = await YjsDocumentManager.getDocumentState(docId)
+            const diff= YjsDocumentManager.getDiff(ydoc , clientStateVector)
+            return diff
+
+        } catch (error) {
+            console.log("Error getting sync updates" , error);
+            throw error
+        }
+    }
+
+    static validateUpdate(
+        update : Uint8Array,
+        expectedVersion : number
+    ) : boolean {
+        if(!update || update.length === 0){
+            console.log(expectedVersion);
+            
+            return false
+        }
+        return true
+
     }
 }
