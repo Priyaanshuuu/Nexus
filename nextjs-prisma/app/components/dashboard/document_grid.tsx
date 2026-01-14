@@ -24,8 +24,8 @@ export default function DocumentGrid({ documents }: DocumentGridProps) {
 
   if (documents.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-slate-500 mb-4">No documents yet</p>
+      <div className="text-center py-14 bg-white/5 border border-white/10 rounded-2xl text-slate-200">
+        <p className="text-base font-semibold mb-2">No documents yet</p>
         <p className="text-sm text-slate-400">
           Create one to get started collaborating
         </p>

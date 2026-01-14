@@ -13,7 +13,7 @@ export default async function EditorLayout({
     }
 
     return (
-        <div className="h-screen flex flex-col bg-white">
+        <div className="min-h-screen flex flex-col bg-[#05060a] text-white">
             {children}
         </div>
     )

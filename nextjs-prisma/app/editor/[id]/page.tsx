@@ -46,7 +46,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
   const isViewOnly = permission === "viewer"
 
   return (
-    <>
+    <div className="min-h-screen bg-[#05060a] text-white">
       <EditorHeader
         docId={docId}
         title={doc.title}
@@ -58,16 +58,19 @@ export default async function EditorPage({ params }: EditorPageProps) {
       />
 
       {isViewOnly && (
-        <div className="bg-yellow-50 border-b border-yellow-200 px-6 py-3 text-sm text-yellow-800">
+        <div className="bg-yellow-500/10 border-y border-yellow-400/30 px-6 py-3 text-sm text-yellow-200 backdrop-blur">
           You have view-only access to this document
         </div>
       )}
 
-      <Editor
-        docId={docId}
-        initialContent={doc.content}
-        readOnly={isViewOnly}
-      />
-    </>
+      <div className="relative flex-1">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(124,58,237,0.12),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(34,211,238,0.12),transparent_40%)]" aria-hidden="true" />
+        <Editor
+          docId={docId}
+          initialContent={doc.content}
+          readOnly={isViewOnly}
+        />
+      </div>
+    </div>
   )
 }

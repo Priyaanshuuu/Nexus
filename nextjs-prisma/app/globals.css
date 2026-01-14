@@ -1,26 +1,125 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #05060a;
+  --foreground: #e5e7eb;
+  --accent: #7c3aed;
+  --accent-2: #22d3ee;
+  --card: #0b0f1a;
+  --card-hover: #11182a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-oswald);
+  --font-mono: var(--font-oswald);
 }
 
 body {
-  background: var(--background);
+  background: radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.15), transparent 35%),
+    radial-gradient(circle at 80% 20%, rgba(34, 211, 238, 0.15), transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.12), transparent 40%),
+    #05060a;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-oswald), "Oswald", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+
+.grid-spotlight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(124, 58, 237, 0.2), transparent 45%);
+  filter: blur(70px);
+  opacity: 0.6;
+}
+
+.feature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  justify-content: center;
+}
+
+.feature-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(124, 58, 237, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.25rem;
+  color: var(--foreground);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 280ms ease, border-color 200ms ease, opacity 200ms ease;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45);
+  transform: translateZ(0);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12), transparent 40%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-12px) translateZ(32px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+  border-color: rgba(124, 58, 237, 0.45);
+  box-shadow: 0 26px 70px rgba(124, 58, 237, 0.4);
+}
+
+.feature-card:hover::after {
+  opacity: 1;
+}
+
+.feature-grid:hover .feature-card:not(:hover) {
+  transform: translateZ(-30px) scale(0.95);
+  opacity: 0.78;
+  filter: blur(0.3px);
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease;
+  cursor: pointer;
+  border: none;
+  pointer-events: auto;
+  text-decoration: none;
+}
+
+.cta-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.cta-primary {
+  background: linear-gradient(135deg, #7c3aed, #22d3ee);
+  color: #0b1020;
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.35);
+}
+
+.cta-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(34, 211, 238, 0.4);
+}
+
+.cta-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cta-secondary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.4);
 }

@@ -53,27 +53,27 @@ export default function EditorHeader({
 
   return (
     <>
-      <header className="bg-white border-b border-slate-200 px-6 py-4">
+      <header className="sticky top-0 z-10 px-6 py-4 border-b border-white/10 bg-[#0b0f1a]/80 backdrop-blur">
         <div className="flex items-center justify-between mb-4">
           {/* Back Button */}
           <Link href="/dashboard">
-            <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900 text-sm font-medium">
+            <button className="flex items-center gap-2 text-slate-200 hover:text-cyan-300 text-sm font-semibold transition">
               <ChevronLeft className="w-4 h-4" />
               Back
             </button>
           </Link>
 
           {/* Sync Status */}
-          <div className="flex items-center gap-2 text-sm text-slate-500">
+          <div className="flex items-center gap-2 text-xs text-slate-300 px-3 py-1 rounded-full border border-white/15 bg-white/5">
             {isSaving ? (
               <>
-                <Clock className="w-4 h-4 animate-spin" />
-                Saving...
+                <Clock className="w-4 h-4 animate-spin text-yellow-300" />
+                <span>Saving...</span>
               </>
             ) : (
               <>
-                <Clock className="w-4 h-4" />
-                Saved
+                <Clock className="w-4 h-4 text-green-300" />
+                <span>Saved</span>
               </>
             )}
           </div>
@@ -82,14 +82,14 @@ export default function EditorHeader({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowCollaborators(true)}
-              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+              className="p-2 rounded-xl hover:bg-white/10 text-slate-200 border border-white/10"
             >
               <Users className="w-5 h-5" />
             </button>
 
             <button
               onClick={() => setShowShare(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-400 text-[#0b0f1a] font-semibold shadow-lg hover:shadow-xl transition"
             >
               <Share2 className="w-4 h-4" />
               Share
@@ -114,19 +114,19 @@ export default function EditorHeader({
                   }
                 }}
                 autoFocus
-                className="flex-1 text-2xl font-bold text-slate-900 outline-none border-b-2 border-blue-500"
+                className="flex-1 text-2xl font-bold text-white outline-none border-b-2 border-cyan-300 bg-transparent"
               />
             </div>
           ) : (
             <h1
               onClick={() => setIsEditing(true)}
-              className="text-2xl font-bold text-slate-900 cursor-pointer hover:text-blue-600"
+              className="text-2xl font-bold text-white cursor-pointer hover:text-cyan-300 transition"
             >
               {currentTitle}
             </h1>
           )}
 
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             Modified {new Date(lastModified).toLocaleDateString()}
           </p>
         </div>

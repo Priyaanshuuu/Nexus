@@ -97,7 +97,10 @@ export async function signOut() {
   try {
     await nextAuthSignOut({ redirectTo: "/" })
   } catch (error) {
+    // CSRF error workaround: clear session and redirect directly
     const message = error instanceof Error ? error.message : "Sign out failed"
+    console.warn(`[Auth] SignOut CSRF error, redirecting: ${message}`)
+    redirect("/")
     console.error(`[Auth Error] Sign out: ${message}`)
     throw new Error(message)
   }

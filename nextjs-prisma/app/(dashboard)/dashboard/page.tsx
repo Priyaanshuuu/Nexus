@@ -27,26 +27,31 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">My Documents</h1>
-          <p className="text-slate-500 mt-1">
-            Create and manage your collaborative documents
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs tracking-[0.18em] uppercase text-slate-300">
+            Dashboard
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mt-2">My Documents</h1>
+          <p className="text-slate-300 mt-1">
+            Create, manage, and collaborate in real time.
           </p>
         </div>
 
-        <CreateButton />
+        <div className="shrink-0">
+          <CreateButton />
+        </div>
       </div>
 
       {/* Error State */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+        <div className="mb-2 p-4 bg-red-500/10 border border-red-500/40 rounded-lg flex items-start gap-3 text-red-100">
+          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-red-900">Error Loading Documents</p>
-            <p className="text-sm text-red-700 mt-1">{error}</p>
+            <p className="font-medium">Error Loading Documents</p>
+            <p className="text-sm mt-1">{error}</p>
           </div>
         </div>
       )}
