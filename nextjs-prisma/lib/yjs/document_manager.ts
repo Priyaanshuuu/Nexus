@@ -2,14 +2,14 @@ import * as Y from "yjs"
 import {prisma} from "@/lib/prisma"
 
 export class YjsDocumentManager{
-    static createYjsDoc(dbState: Buffer | null) : Y.Doc {
+    static createYjsDoc(dbState: Uint8Array | Buffer | null) : Y.Doc {
         const ydoc = new Y.Doc()
 
         if(dbState && dbState.length > 0){
             try {
                 Y.applyUpdate(ydoc , dbState)
             } catch (error) {
-                console.log("[Yjs] Error applying saved state: " ,error);
+                console.log("[Yjs] Error applying saved state: ", error);
             }
         }
 
@@ -40,7 +40,7 @@ export class YjsDocumentManager{
         return ytext.toString()
     }
 
-    static applyUpdate(ydoc : Y.Doc , update: Uint16Array) : void {
+    static applyUpdate(ydoc : Y.Doc , update: Uint8Array) : void {
         try {
             Y.applyUpdate(ydoc , update)
         } catch (error) {
@@ -49,12 +49,12 @@ export class YjsDocumentManager{
         }
     }
 
-    static encodeState(ydoc : Y.Doc): Uint16Array {
+    static encodeState(ydoc : Y.Doc): Uint8Array {
         return Y.encodeStateAsUpdate(ydoc)
     }
 
-    static getDiff(ydoc : Y.Doc , stateVector : Uint8Array){
-        return Y.encodeStateVector(ydoc)
+    static getDiff(ydoc : Y.Doc , stateVector : Uint8Array): Uint8Array {
+        return Y.encodeStateAsUpdate(ydoc, stateVector)
     }
 
 }

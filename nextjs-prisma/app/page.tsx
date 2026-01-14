@@ -3,6 +3,8 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import type { Session } from "next-auth"
 
+export const dynamic = "force-dynamic"
+
 const features = [
   {
     title: "Live collaboration",

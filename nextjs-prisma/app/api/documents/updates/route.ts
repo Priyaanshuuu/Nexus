@@ -3,23 +3,26 @@ import { getCurrentUser , getDocumentPermission } from "@/lib/auth/permission";
 import { UpdateHandler } from "@/lib/yjs/update_handler";
 import type { ApplyUpdateRequest } from "@/types/yjs";
 
-export async function POST(
-    request : NextRequest, 
-    {params} : {params : Promise<{id : string}>}
-){
+export async function POST(request : NextRequest){
     try {
         const userId = await getCurrentUser()
-        const {id : docId} = await params
+        
+        const body = await request.json() as ApplyUpdateRequest & { docId: string }
 
-        const permission = await getDocumentPermission(docId)
+        if(!body.docId){
+            return NextResponse.json(
+                {error : "Missing docId"},
+                {status : 400}
+            )
+        }
+
+        const permission = await getDocumentPermission(body.docId)
         if(permission !== "editor" && permission !== "owner"){
             return NextResponse.json(
                 {error : "You do not have permission to edit this"},
                 {status : 403}
             )
         }
-
-        const body = await request.json() as ApplyUpdateRequest
 
         if(!body.update || !body.clientVersion){
             return NextResponse.json(
@@ -37,7 +40,7 @@ export async function POST(
         }
 
         const result = await UpdateHandler.applyClientUpdate(
-            docId,
+            body.docId,
             updateBuffer,
             body.clientVersion,
             userId
@@ -50,35 +53,43 @@ export async function POST(
             )
         }
 
-        console.log(`API Update applied to ${docId} by ${userId}`);
+        console.log(`API Update applied to ${body.docId} by ${userId}`);
+        
+        return NextResponse.json({ success: true })
         
     } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to apply update"
-        console.log( "API Error : POST documents/[id]/updates",message);
+        console.log("API Error : POST documents/updates", message);
         return NextResponse.json({error : message} , {status : 500})
     }
-
 }
 
-export async function GET(
-    request : NextRequest,
-    {params} : {params : Promise<{id : string}>}
-){
+export async function GET(request : NextRequest){
    try {
      const userId = await getCurrentUser()
      console.log(userId);
-    const {id : docId} = await params
-    const permission = await getDocumentPermission(docId)
-    if(permission === "none"){
-        return NextResponse.json({error : "Access denied"} , {status : 403})
-    }
-    const stateVectorB64 = request.nextUrl.searchParams.get("stateVector")
-    if(!stateVectorB64){
-        return NextResponse.json({
-            error : "Missing statevector quesry parameter"
-        }, 
-    {status : 400})
-    }
+     
+     const docId = request.nextUrl.searchParams.get("docId")
+     
+     if(!docId){
+         return NextResponse.json(
+             {error : "Missing docId query parameter"},
+             {status : 400}
+         )
+     }
+     
+     const permission = await getDocumentPermission(docId)
+     if(permission === "none"){
+         return NextResponse.json({error : "Access denied"} , {status : 403})
+     }
+     
+     const stateVectorB64 = request.nextUrl.searchParams.get("stateVector")
+     if(!stateVectorB64){
+         return NextResponse.json({
+             error : "Missing stateVector query parameter"
+         }, 
+         {status : 400})
+     }
 
     const stateVector = Buffer.from(stateVectorB64 , "base64")
 
@@ -93,8 +104,8 @@ export async function GET(
     )
     
    } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed tp get updates!!"
-    console.log("API Error : GET documents/[id]/updates");
+    const message = error instanceof Error ? error.message : "Failed to get updates"
+    console.log("API Error : GET documents/updates");
     return NextResponse.json({error : message} , {status : 500})
    }
 }

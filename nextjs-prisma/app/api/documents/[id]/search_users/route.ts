@@ -4,11 +4,18 @@ import { getDocumentPermission } from "@/lib/auth/permission"
 
 export async function GET(
     request : NextRequest,
-    {params} : {params : {id : string}}
+    {params} : {params : Promise<{id : string}>}
 ){
     try {
-        const docId = params.id
-        const query = request.nextUrl.searchParams.get("q")
+        const {id : docId} = await params
+        if (!docId) {
+            return NextResponse.json(
+                { error: "Document id is required" },
+                { status: 400 }
+            )
+        }
+
+        const queryRaw = request.nextUrl.searchParams.get("q")?.trim() ?? ""
 
         const permission = await getDocumentPermission(docId)
         if(permission !== "owner"){
@@ -18,17 +25,19 @@ export async function GET(
             )
         }
 
-        if(!query || query.trim().length < 2){
+        if(queryRaw.length < 2){
             return NextResponse.json(
-                {status : "Search query must be at least 2 character"},
+                {error : "Search query must be at least 2 characters"},
                 {status : 400}
             )
         }
 
+        const query = queryRaw.toLowerCase()
+
         const users = await prisma.user.findMany({
             where : {
                 email: {
-                    contains:query.toLowerCase(),
+                    contains: query,
                     mode : "insensitive"
                 }
             },

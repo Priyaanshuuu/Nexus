@@ -53,7 +53,7 @@ export class UpdateHandler {
 
     static async mergeConcurrentUpdated(
         docId : string,
-        updates : Uint16Array
+        updates : Uint8Array
 
     ) : Promise<string> {
         try {
