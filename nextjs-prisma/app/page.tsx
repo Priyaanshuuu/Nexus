@@ -1,6 +1,7 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import type { Session } from "next-auth"
 
 const features = [
   {
@@ -26,7 +27,7 @@ const features = [
 ]
 
 export default async function HomePage() {
-  let session: Awaited<ReturnType<typeof auth>> = null
+  let session: Session | null = null
   try {
     session = await auth()
   } catch (error) {

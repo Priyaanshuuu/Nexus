@@ -54,7 +54,7 @@ export default function SignUpPage() {
         </div>
 
         <div className="relative">
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-cyan-400/25 via-purple-500/25 to-transparent blur-2xl" aria-hidden="true" />
+          <div className="absolute -inset-1 rounded-2xl bg-linear-to-br from-cyan-400/25 via-purple-500/25 to-transparent blur-2xl" aria-hidden="true" />
           <form
             onSubmit={handleSubmit}
             className="relative bg-[#0b0f1a]/80 border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6 backdrop-blur"

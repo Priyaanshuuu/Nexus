@@ -3,7 +3,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+//import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ChevronLeft, Share2, Users, Clock } from "lucide-react"
 import ShareDialog from "./share_dialog"
@@ -32,7 +32,7 @@ export default function EditorHeader({
   const [showCollaborators, setShowCollaborators] = useState(false)
   const [currentTitle, setCurrentTitle] = useState(title)
   const [isEditing, setIsEditing] = useState(false)
-  const router = useRouter()
+  //const router = useRouter()
 
   const handleTitleSave = async () => {
     if (currentTitle.trim() && currentTitle !== title) {
@@ -42,6 +42,8 @@ export default function EditorHeader({
         })
         setIsEditing(false)
       } catch (error) {
+        console.log(error);
+        
         alert("Failed to save title")
         setCurrentTitle(title)
       }
@@ -89,7 +91,7 @@ export default function EditorHeader({
 
             <button
               onClick={() => setShowShare(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-400 text-[#0b0f1a] font-semibold shadow-lg hover:shadow-xl transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-linear-to-r from-purple-500 to-cyan-400 text-[#0b0f1a] font-semibold shadow-lg hover:shadow-xl transition"
             >
               <Share2 className="w-4 h-4" />
               Share

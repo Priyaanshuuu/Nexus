@@ -56,7 +56,7 @@ export default function DocumentCard({
         {/* Actions */}
         <div className="flex gap-2">
           <Link href={`/editor/${id}`} className="flex-1">
-            <button className="w-full px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-400 text-[#0b0f1a] font-semibold shadow-lg hover:shadow-xl transition">
+            <button className="w-full px-4 py-2 rounded-xl bg-linear-to-r from-purple-500 to-cyan-400 text-[#0b0f1a] font-semibold shadow-lg hover:shadow-xl transition">
               Open
             </button>
           </Link>
