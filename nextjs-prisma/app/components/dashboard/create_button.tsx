@@ -67,7 +67,7 @@ export default function CreateButton() {
                 if (e.key === "Enter") handleCreate()
               }}
               autoFocus
-              className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+              className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 bg-white text-slate-900 placeholder-slate-500"
             />
 
             {error && (

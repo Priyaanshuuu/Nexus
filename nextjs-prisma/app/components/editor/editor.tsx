@@ -46,6 +46,20 @@ export default function Editor({
     }
   }
 
+  const handleManualSave = async () => {
+    if (readOnly) return
+    try {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+        saveTimeoutRef.current = null
+      }
+      const latest = ytextRef.current?.toString() ?? content
+      await saveContent(latest)
+    } catch (e) {
+      console.error("[Editor] Manual save failed", e)
+    }
+  }
+
   useEffect(() => {
     const editor = editorRef.current
     if (!editor) return
@@ -124,7 +138,8 @@ export default function Editor({
     <div className="flex-1 overflow-auto bg-black flex flex-col">
       {/* Save Status */}
       <div className="sticky top-0 px-8 py-2 bg-gray-900 border-b border-gray-700">
-        <div className="flex items-center gap-2 text-xs text-gray-400">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs text-gray-400">
           {saving && (
             <>
               <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
@@ -137,6 +152,17 @@ export default function Editor({
               <span>Saved at {lastSaved.toLocaleTimeString()}</span>
             </>
           )}
+          </div>
+
+          {!readOnly && (
+            <button
+              onClick={handleManualSave}
+              disabled={saving}
+              className="px-3 py-1 rounded-full border border-white/15 bg-white/5 text-slate-200 text-xs font-semibold hover:bg-white/10 transition disabled:opacity-60"
+            >
+              {saving ? "Saving..." : "Save now"}
+            </button>
+          )}
         </div>
       </div>
 
@@ -146,7 +172,7 @@ export default function Editor({
           ref={editorRef}
           contentEditable={!readOnly}
           suppressContentEditableWarning
-          className="min-h-full max-w-4xl mx-auto p-8 focus:outline-none prose prose-lg text-white bg-black whitespace-pre-wrap"
+          className="min-h-full max-w-4xl mx-auto p-8 focus:outline-none prose prose-lg text-white bg-black whitespace-pre-wrap text-base leading-relaxed"
         />
       </div>
     </div>

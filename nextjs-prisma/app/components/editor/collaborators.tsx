@@ -19,15 +19,15 @@ export default function Collaborators({
   onClose,
 }: CollaboratorsProps) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-[#0b0f1a] border border-white/10 rounded-lg shadow-lg p-6 max-w-md w-full mx-4 backdrop-blur">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-slate-900">
+          <h2 className="text-lg font-semibold text-white">
             Collaborators
           </h2>
           <button
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-900"
+            className="text-slate-400 hover:text-white"
           >
             <X className="w-5 h-5" />
           </button>
