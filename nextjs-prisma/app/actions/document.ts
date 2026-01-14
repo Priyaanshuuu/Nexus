@@ -2,22 +2,22 @@
 
 import { prisma } from "@/lib/prisma"
 import { getCurrentUser , getDocumentPermission  } from "@/lib/auth/permission"
-import type { DocumentCreateInput, DocumentUpdateInput } from "@/types/document"
+import type { DocumentUpdateInput } from "@/types/document"
 import { Prisma } from "../generated/prisma/client"
 
-export async function createDocument(input: DocumentCreateInput) {
+export async function createDocument({ title }: { title: string }) {
   try {
     const userId = await getCurrentUser()
 
-    const title = input.title?.trim() || "Untitled Document"
+    const trimmedTitle = title.trim() || "Untitled Document"
 
-    if (title.length > 255) {
+    if (trimmedTitle.length > 255) {
       throw new Error("Title must be less than 255 characters")
     }
 
     const document = await prisma.document.create({
       data: {
-        title,
+        title: trimmedTitle,
         ownerId: userId,
         content: "",
         isLocalOnly: true,
