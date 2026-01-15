@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/prisma"
 import { getCurrentUser , getDocumentPermission  } from "@/lib/auth/permission"
 import type { DocumentUpdateInput } from "@/types/document"
-import type { Prisma } from "@prisma/client"
 
 export async function createDocument({ title }: { title: string }) {
   try {
@@ -145,14 +144,12 @@ export async function updateDocument(
       throw new Error("Title must be less than 255 characters")
     }
 
-    const updateData: Prisma.DocumentUpdateInput = {}
+    const updateData: Partial<DocumentUpdateInput> = {}
     if (input.title !== undefined) {
       updateData.title = input.title.trim() || "Untitled Document"
     }
     if (input.content !== undefined) {
       updateData.content = input.content
-      updateData.version = { increment: 1 }
-      updateData.isLocalOnly = false
     }
 
     const document = await prisma.document.update({
