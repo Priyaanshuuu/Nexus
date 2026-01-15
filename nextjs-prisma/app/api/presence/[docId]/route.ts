@@ -116,7 +116,7 @@ export async function GET(
         color: "#FF6B6B", // Red for owner
         lastSeen: new Date(),
       },
-      ...document.collaborators.map((collab: { userId: string; user: { id: string; name: string | null; email: string | null; image: string | null } }, index: number) => ({
+      ...document.collaborators.map((collab: { userId: string; user: { id: string; name: string | null; email: string | null; image: string | null }  }, index: number) => ({
         userId: collab.userId,
         name: collab.user.name,
         email: collab.user.email,
