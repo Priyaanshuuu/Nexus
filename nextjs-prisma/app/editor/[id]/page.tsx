@@ -51,7 +51,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
         docId={docId}
         title={doc.title}
         lastModified={doc.lastModifiedAt}
-        collaborators={doc.collaborators.map((c) => ({
+        collaborators={doc.collaborators.map((c: { user: { name: string | null; email: string | null }; role: string }) => ({
           user: c.user,
           role: c.role,
         }))}
