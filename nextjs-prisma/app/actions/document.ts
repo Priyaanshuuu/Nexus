@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma"
 import { getCurrentUser , getDocumentPermission  } from "@/lib/auth/permission"
 import type { DocumentUpdateInput } from "@/types/document"
-import { Prisma } from "../generated/prisma/client"
+import { Prisma } from "@prisma/client"
 
 export async function createDocument({ title }: { title: string }) {
   try {
