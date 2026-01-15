@@ -49,7 +49,7 @@ export async function getSyncStatus(docId: string) {
     })
 
     const pendingCount = operations.filter(
-      (op) => op.status === "PENDING"
+      (op: { status: string }) => op.status === "PENDING"
     ).length
 
     return {
