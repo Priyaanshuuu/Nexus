@@ -89,7 +89,7 @@ export async function getActiveUsers(docId: string) {
         color: colors[0],
         isCurrentUser: owner!.id === userId,
       },
-      ...document.collaborators.map((collab, index) => ({
+      ...document.collaborators.map((collab: { userId: string; role: string; user: { id: string; name: string | null; email: string | null } }, index: number) => ({
         userId: collab.userId,
         name: collab.user.name || "Collaborator",
         email: collab.user.email,
