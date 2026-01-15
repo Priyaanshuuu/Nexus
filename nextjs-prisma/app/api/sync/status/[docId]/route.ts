@@ -27,15 +27,15 @@ export async function GET(
         })
 
         const pendingCount = operations.filter(
-            (op) => op.status === "PENDING"
+            (op: { status: string }) => op.status === "PENDING"
         ).length
 
         const syncedCount = operations.filter(
-            (op) => op.status === "SYNCED"
+            (op: { status: string }) => op.status === "SYNCED"
         ).length
 
         const failedCount = operations.filter(
-            (op) => op.status === "FAILED"
+            (op: { status: string }) => op.status === "FAILED"
         ).length
 
         return NextResponse.json(
