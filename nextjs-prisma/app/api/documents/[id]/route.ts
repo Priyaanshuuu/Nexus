@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { Prisma } from "@prisma/client"
 import { getCurrentUser , getDocumentPermission , requireDocumentPermission } from "@/lib/auth/permission"
 import type { DocumentUpdateInput } from "@/types/document"
 
@@ -72,14 +71,12 @@ export async function PATCH(
       )
     }
 
-    const updateData: Prisma.DocumentUpdateInput = {}
+    const updateData: Partial<DocumentUpdateInput> = {}
     if (body.title !== undefined) {
       updateData.title = body.title.trim() || "Untitled Document"
     }
     if (body.content !== undefined) {
       updateData.content = body.content
-      updateData.version = { increment: 1 } 
-      updateData.isLocalOnly = false
     }
 
     const document = await prisma.document.update({
