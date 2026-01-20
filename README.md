@@ -63,7 +63,7 @@ Gemini API streams the response back chunk-by-chunk directly into the editor nod
 1. Clone & Install
 Bash
 
-git clone https://github.com/Priyaaanshu/nexus.git
+git clone https://github.com/Priyaanshuuu/nexus.git
 cd nexus
 npm install
 # or
